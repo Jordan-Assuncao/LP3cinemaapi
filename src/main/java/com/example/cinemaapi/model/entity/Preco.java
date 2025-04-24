@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,6 +21,6 @@ public class Preco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double valorInteira;
+    private BigDecimal valorInteira;
     private String descricao;
 }

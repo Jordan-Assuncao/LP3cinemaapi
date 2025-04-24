@@ -1,9 +1,6 @@
 package com.example.cinemaapi.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,5 +22,7 @@ public class Sala {
     private String formatoSala;
     private int numeroFileiraVertical;
     private int numeroFileiraHorizontal;
+
+    @ManyToOne
     private Unidade unidade;
 }

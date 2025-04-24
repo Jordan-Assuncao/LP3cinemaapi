@@ -1,9 +1,6 @@
 package com.example.cinemaapi.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +20,7 @@ public class Filme {
     private String sinopse;
     private String duracao;
     private String cartaz;
+
+    @ManyToOne
     private ClassificacaoIndicativa classificacaoIndicativa;
 }

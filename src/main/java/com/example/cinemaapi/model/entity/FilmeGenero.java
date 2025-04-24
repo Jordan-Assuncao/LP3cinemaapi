@@ -1,9 +1,6 @@
 package com.example.cinemaapi.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +16,9 @@ public class FilmeGenero {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
     private Filme filme;
+
+    @ManyToOne
     private Genero genero;
 }

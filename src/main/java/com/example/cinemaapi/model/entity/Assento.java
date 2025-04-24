@@ -1,9 +1,6 @@
 package com.example.cinemaapi.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +20,10 @@ public class Assento {
     private int fileiraVertical;
     private int fileiraHorizontal;
     private boolean statusAssento;
+
+    @ManyToOne
     private Sala sala;
+
+    @ManyToOne
     private TipoAssento tipoAssento;
 }

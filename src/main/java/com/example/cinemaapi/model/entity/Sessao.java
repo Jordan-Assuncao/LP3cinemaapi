@@ -1,9 +1,6 @@
 package com.example.cinemaapi.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +21,13 @@ public class Sessao {
     private boolean statusSessao;
     private boolean dublado;
     private boolean legendado;
+
+    @ManyToOne
     private Sala sala;
+
+    @ManyToOne
     private Filme filme;
+
+    @ManyToOne
     private Preco preco;
 }

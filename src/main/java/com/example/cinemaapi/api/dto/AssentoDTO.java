@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +16,8 @@ public class AssentoDTO {
     private int fileiraVertical;
     private int fileiraHorizontal;
     private boolean statusAssento;
+    private String idUnidade;
+    private String nomeUnidade;
     private Long idSala;
     private String numeroSala;
     private Long idTipoAssento;
@@ -25,6 +26,7 @@ public class AssentoDTO {
     public static AssentoDTO create(Assento assento) {
         ModelMapper modelMapper = new ModelMapper();
         AssentoDTO dto = modelMapper.map(assento, AssentoDTO.class);
+        dto.nomeUnidade = assento.getSala().getUnidade().getNomeUnidade();
         dto.numeroSala = assento.getSala().getNumeroSala();
         dto.nomeAssento = assento.getTipoAssento().getNomeAssento();
         return dto;

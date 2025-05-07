@@ -1,5 +1,6 @@
 package com.example.cinemaapi.api.dto;
 
+import com.example.cinemaapi.model.entity.ClassificacaoIndicativa;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +16,9 @@ public class ClassificacaoIndicativaDTO {
     private String descricao;
 
 
-    public static ClassificacaoIndicativaDTO create(ClassificacaoIndicativaDTO classificacaoIndicativaDTO) {
+    public static ClassificacaoIndicativaDTO create(ClassificacaoIndicativa classificacaoIndicativa) {
         ModelMapper modelMapper = new ModelMapper();
-        ClassificacaoIndicativaDTO dto = modelMapper.map(classificacaoIndicativaDTO, ClassificacaoIndicativaDTO.class);
+        ClassificacaoIndicativaDTO dto = modelMapper.map(classificacaoIndicativa, ClassificacaoIndicativaDTO.class);
         return dto;
     }
 }

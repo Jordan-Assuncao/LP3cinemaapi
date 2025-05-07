@@ -26,4 +26,5 @@ public class Assento {
 
     @ManyToOne
     private TipoAssento tipoAssento;
+
 }

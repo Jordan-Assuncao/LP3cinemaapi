@@ -40,8 +40,11 @@ public class FilmeGeneroService {
     }
 
     public void validar(FilmeGenero filmeGenero) {
-        if (filmeGenero.getFilme() == null) {
-            throw new RegraNegocioException("Filme inválido.");
+        if (filmeGenero.getFilme() == null || filmeGenero.getFilme().getId() == null) {
+            throw new RegraNegocioException("Filme inválido");
+        }
+        if (filmeGenero.getGenero() == null || filmeGenero.getGenero().getId() == null) {
+            throw new RegraNegocioException("Gênero inválido");
         }
     }
 }

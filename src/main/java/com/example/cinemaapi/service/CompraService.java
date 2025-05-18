@@ -6,6 +6,7 @@ import com.example.cinemaapi.model.repository.CompraRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,8 +41,14 @@ public class CompraService {
     }
 
     public void validar(Compra compra) {
-        if (compra.getCliente() == null) {
-            throw new RegraNegocioException("Cliente inválido.");
+        if (compra.getDataCompra() == null || compra.getDataCompra().trim().isEmpty()) {
+            throw new RegraNegocioException("Data da compra inválida");
+        }
+        if (compra.getValorTotal() == null || compra.getValorTotal().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RegraNegocioException("Valor total inválido");
+        }
+        if (compra.getCliente() == null || compra.getCliente().getId() == null) {
+            throw new RegraNegocioException("Cliente inválido");
         }
     }
 }

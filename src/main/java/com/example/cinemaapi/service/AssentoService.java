@@ -40,8 +40,20 @@ public class AssentoService {
     }
 
     public void validar(Assento assento) {
-        if (assento.getSala() == null) {
+        if (assento.getNumeroAssento() == null || assento.getNumeroAssento().trim().isEmpty()) {
+            throw new RegraNegocioException("Número do assento inválido");
+        }
+        if (assento.getFileiraVertical() < 0) {
+            throw new RegraNegocioException("Fileira vertical inválida");
+        }
+        if (assento.getFileiraHorizontal() < 0) {
+            throw new RegraNegocioException("Fileira horizontal inválida");
+        }
+        if (assento.getSala() == null || assento.getSala().getId() == null) {
             throw new RegraNegocioException("Sala inválida");
+        }
+        if (assento.getTipoAssento() == null || assento.getTipoAssento().getId() == null) {
+            throw new RegraNegocioException("Tipo de assento inválido");
         }
     }
 }

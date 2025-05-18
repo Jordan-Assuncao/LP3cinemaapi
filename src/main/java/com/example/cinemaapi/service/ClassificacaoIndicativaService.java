@@ -40,8 +40,11 @@ public class ClassificacaoIndicativaService {
     }
 
     public void validar(ClassificacaoIndicativa classificacaoIndicativa) {
-        if (classificacaoIndicativa.getFaixaEtaria() == null) {
+        if (classificacaoIndicativa.getFaixaEtaria() == null || classificacaoIndicativa.getFaixaEtaria().trim().isEmpty()) {
             throw new RegraNegocioException("Faixa etária inválida");
+        }
+        if (classificacaoIndicativa.getDescricao() == null || classificacaoIndicativa.getDescricao().trim().isEmpty()) {
+            throw new RegraNegocioException("Descrição inválida");
         }
     }
 }

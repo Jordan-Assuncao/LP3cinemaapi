@@ -40,8 +40,20 @@ public class ClienteService {
     }
 
     public void validar(Cliente cliente) {
-        if (cliente.getCpf() == null) {
-            throw new RegraNegocioException("CPF inválido.");
+        if (cliente.getNome() == null || cliente.getNome().trim().isEmpty()) {
+            throw new RegraNegocioException("Nome inválido");
+        }
+        if (cliente.getCpf() == null || cliente.getCpf().trim().isEmpty()) {
+            throw new RegraNegocioException("CPF inválido");
+        }
+        if (cliente.getTelefone() == null || cliente.getTelefone().trim().isEmpty()) {
+            throw new RegraNegocioException("Telefone inválido");
+        }
+        if (cliente.getEmail() == null || cliente.getEmail().trim().isEmpty()) {
+            throw new RegraNegocioException("Email inválido");
+        }
+        if (cliente.getSenha() == null || cliente.getSenha().trim().isEmpty()) {
+            throw new RegraNegocioException("Senha inválida");
         }
     }
 }

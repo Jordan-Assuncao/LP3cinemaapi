@@ -16,7 +16,7 @@ public class AssentoDTO {
     private int fileiraVertical;
     private int fileiraHorizontal;
     private boolean statusAssento;
-    private String idUnidade;
+    private Long idUnidade;
     private String nomeUnidade;
     private Long idSala;
     private String numeroSala;

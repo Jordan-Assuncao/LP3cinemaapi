@@ -15,9 +15,9 @@ public class SessaoTipoExibicaoDTO {
     private String idSessao;
     private String dataSessao;
     private String horaSessao;
-    private String idFilme;
+    private Long idFilme;
     private String titulo;
-    private String idTipoExibicao;
+    private Long idTipoExibicao;
     private String formatoExibicao;
 
     public static SessaoTipoExibicaoDTO create(SessaoTipoExibicao sessaoTipoExibicao) {

@@ -15,7 +15,7 @@ public class CompraDTO {
     private Long id;
     private String dataCompra;
     private BigDecimal valorTotal;
-    private String idCliente;
+    private Long idCliente;
     private String nome;
     private String cpf;
     private String telefone;

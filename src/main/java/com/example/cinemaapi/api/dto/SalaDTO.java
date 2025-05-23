@@ -18,7 +18,7 @@ public class SalaDTO {
     private String formatoSala;
     private int numeroFileiraVertical;
     private int numeroFileiraHorizontal;
-    private String idUnidade;
+    private Long idUnidade;
     private String nomeUnidade;
 
     public static SalaDTO create(Sala sala) {

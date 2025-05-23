@@ -18,13 +18,13 @@ public class SessaoDTO {
     private boolean statusSessao;
     private boolean dublado;
     private boolean legendado;
-    private String idUnidade;
+    private Long idUnidade;
     private String nomeUnidade;
-    private String idSala;
+    private Long idSala;
     private String numeroSala;
-    private String idFilme;
+    private Long idFilme;
     private String titulo;
-    private String idPreco;
+    private Long idPreco;
     private BigDecimal valorInteira;
 
     public static SessaoDTO create(Sessao sessao) {

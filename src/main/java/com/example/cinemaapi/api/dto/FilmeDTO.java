@@ -16,7 +16,7 @@ public class FilmeDTO {
     private String sinopse;
     private String duracao;
     private String cartaz;
-    private String idClassificacaoIndicativa;
+    private Long idClassificacaoIndicativa;
     private String faixaEtaria;
     private String descricao;
 

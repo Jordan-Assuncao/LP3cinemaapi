@@ -12,9 +12,9 @@ import org.modelmapper.ModelMapper;
 public class FilmeGeneroDTO {
 
     private Long id;
-    private String idFilme;
+    private Long idFilme;
     private String titulo;
-    private String idGenero;
+    private Long idGenero;
     private String nomeGenero;
 
     public static FilmeGeneroDTO create(FilmeGenero filmeGenero) {

@@ -14,18 +14,18 @@ public class IngressoDTO {
 
     private Long id;
     private boolean tipoIngresso;
-    private String idSessao;
+    private Long idSessao;
     private String dataSessao;
     private String horaSessao;
     private String nomeUnidade;
     private String numeroSala;
-    private String idFilme;
+    private Long idFilme;
     private String titulo;
     private String idPreco;
     private BigDecimal valorInteira;
-    private String idAssento;
+    private Long idAssento;
     private String numeroAssento;
-    private String idCompra;
+    private Long idCompra;
     private String dataCompra;
 
     public static IngressoDTO create(Ingresso ingresso) {

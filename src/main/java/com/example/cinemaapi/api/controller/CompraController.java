@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Optional;
 
 @RestController
@@ -17,7 +16,7 @@ import java.util.Optional;
 @CrossOrigin
 public class CompraController {
 
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     public Compra converter(CompraDTO dto) {
         ModelMapper modelMapper = new ModelMapper();

@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Optional;
 
 @RestController
@@ -20,8 +19,8 @@ import java.util.Optional;
 @CrossOrigin
 public class AssentoController {
 
-    private TipoAssentoService tipoAssentoService;
-    private SalaService salaService;
+    private final TipoAssentoService tipoAssentoService;
+    private final SalaService salaService;
 
     public Assento converter(AssentoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();

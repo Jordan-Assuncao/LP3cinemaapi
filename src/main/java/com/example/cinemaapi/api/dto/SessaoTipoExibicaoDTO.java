@@ -12,7 +12,7 @@ import org.modelmapper.ModelMapper;
 public class SessaoTipoExibicaoDTO {
 
     private Long id;
-    private String idSessao;
+    private Long idSessao;
     private String dataSessao;
     private String horaSessao;
     private Long idFilme;

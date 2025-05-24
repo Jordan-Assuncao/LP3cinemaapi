@@ -4,14 +4,19 @@ import com.example.cinemaapi.api.dto.FilmeGeneroDTO;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.model.entity.FilmeGenero;
 import com.example.cinemaapi.model.entity.Genero;
+import com.example.cinemaapi.service.FilmeGeneroService;
 import com.example.cinemaapi.service.FilmeService;
 import com.example.cinemaapi.service.GeneroService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/filmegeneros")
@@ -21,6 +26,13 @@ public class FilmeGeneroController {
 
     private final GeneroService generoService;
     private final FilmeService filmeService;
+    private final FilmeGeneroService service;
+
+    @GetMapping()
+    public ResponseEntity get() {
+        List<FilmeGenero> filmeGeneros = service.getFilmeGeneros();
+        return ResponseEntity.ok(filmeGeneros.stream().map(FilmeGeneroDTO::create).collect(Collectors.toList()));
+    }
 
     public FilmeGenero converter(FilmeGeneroDTO dto) {
         ModelMapper modelMapper = new ModelMapper();

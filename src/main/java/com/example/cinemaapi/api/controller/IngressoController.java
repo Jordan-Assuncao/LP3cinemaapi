@@ -8,12 +8,17 @@ import com.example.cinemaapi.model.entity.Compra;
 import com.example.cinemaapi.service.AssentoService;
 import com.example.cinemaapi.service.SessaoService;
 import com.example.cinemaapi.service.CompraService;
+import com.example.cinemaapi.service.IngressoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/ingressos")
@@ -24,6 +29,13 @@ public class IngressoController {
     private final SessaoService sessaoService;
     private final AssentoService assentoService;
     private final CompraService compraService;
+    private final IngressoService service;
+
+    @GetMapping()
+    public ResponseEntity get() {
+        List<Ingresso> ingressos = service.getIngressos();
+        return ResponseEntity.ok(ingressos.stream().map(IngressoDTO::create).collect(Collectors.toList()));
+    }
 
     public Ingresso converter(IngressoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();

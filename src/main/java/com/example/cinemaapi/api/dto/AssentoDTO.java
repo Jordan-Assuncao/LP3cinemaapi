@@ -26,6 +26,7 @@ public class AssentoDTO {
     public static AssentoDTO create(Assento assento) {
         ModelMapper modelMapper = new ModelMapper();
         AssentoDTO dto = modelMapper.map(assento, AssentoDTO.class);
+        dto.idUnidade = assento.getSala().getUnidade().getId();
         dto.nomeUnidade = assento.getSala().getUnidade().getNomeUnidade();
         dto.numeroSala = assento.getSala().getNumeroSala();
         dto.nomeAssento = assento.getTipoAssento().getNomeAssento();

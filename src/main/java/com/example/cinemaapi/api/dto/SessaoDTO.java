@@ -30,6 +30,7 @@ public class SessaoDTO {
     public static SessaoDTO create(Sessao sessao) {
         ModelMapper modelMapper = new ModelMapper();
         SessaoDTO dto = modelMapper.map(sessao, SessaoDTO.class);
+        dto.idUnidade = sessao.getSala().getUnidade().getId();
         dto.nomeUnidade = sessao.getSala().getUnidade().getNomeUnidade();
         dto.numeroSala = sessao.getSala().getNumeroSala();
         dto.titulo = sessao.getFilme().getTitulo();

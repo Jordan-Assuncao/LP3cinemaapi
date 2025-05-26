@@ -25,6 +25,7 @@ public class SessaoTipoExibicaoDTO {
         SessaoTipoExibicaoDTO dto = modelMapper.map(sessaoTipoExibicao, SessaoTipoExibicaoDTO.class);
         dto.dataSessao = sessaoTipoExibicao.getSessao().getDataSessao();
         dto.horaSessao = sessaoTipoExibicao.getSessao().getHoraSessao();
+        dto.idFilme = sessaoTipoExibicao.getSessao().getFilme().getId();
         dto.titulo = sessaoTipoExibicao.getSessao().getFilme().getTitulo();
         dto.formatoExibicao = sessaoTipoExibicao.getTipoExibicao().getFormatoExibicao();
         return dto;

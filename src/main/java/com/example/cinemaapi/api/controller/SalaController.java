@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.SalaDTO;
 import com.example.cinemaapi.model.entity.Sala;
 import com.example.cinemaapi.model.entity.Unidade;
@@ -29,6 +27,15 @@ public class SalaController {
     public ResponseEntity get() {
         List<Sala> salas = service.getSalas();
         return ResponseEntity.ok(salas.stream().map(SalaDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<Sala> sala = service.getSalaById(id);
+        if (!sala.isPresent()) {
+            return new ResponseEntity("Sala não encontrada", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(sala.map(SalaDTO::create));
     }
 
     public Sala converter(SalaDTO dto) {

@@ -7,11 +7,10 @@ import com.example.cinemaapi.service.ClassificacaoIndicativaService;
 import com.example.cinemaapi.service.FilmeService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +28,15 @@ public class FilmeController {
     public ResponseEntity get() {
         List<Filme> filmes = service.getFilmes();
         return ResponseEntity.ok(filmes.stream().map(FilmeDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<Filme> filme = service.getFilmeById(id);
+        if (!filme.isPresent()) {
+            return new ResponseEntity("Filme não encontrado", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(filme.map(FilmeDTO::create));
     }
 
     public Filme converter(FilmeDTO dto) {

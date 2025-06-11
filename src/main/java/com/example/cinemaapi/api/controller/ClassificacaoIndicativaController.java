@@ -5,13 +5,12 @@ import com.example.cinemaapi.model.entity.ClassificacaoIndicativa;
 import com.example.cinemaapi.service.ClassificacaoIndicativaService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/classificacaoindicativas")
@@ -25,6 +24,15 @@ public class ClassificacaoIndicativaController {
     public ResponseEntity get() {
         List<ClassificacaoIndicativa> classificacaoIndicativas = service.getClassificacaoIndicativas();
         return ResponseEntity.ok(classificacaoIndicativas.stream().map(ClassificacaoIndicativaDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<ClassificacaoIndicativa> classificacaoIndicativa = service.getClassificacaoIndicativaById(id);
+        if (!classificacaoIndicativa.isPresent()) {
+            return new ResponseEntity("Classificação indicativa não encontrada", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(classificacaoIndicativa.map(ClassificacaoIndicativaDTO::create));
     }
 
     public ClassificacaoIndicativa converter(ClassificacaoIndicativaDTO dto) {

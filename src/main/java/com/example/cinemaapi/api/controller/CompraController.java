@@ -6,11 +6,10 @@ import com.example.cinemaapi.service.ClienteService;
 import com.example.cinemaapi.service.CompraService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +27,15 @@ public class CompraController {
     public ResponseEntity get() {
         List<Compra> compras = service.getCompras();
         return ResponseEntity.ok(compras.stream().map(CompraDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<Compra> compra = service.getCompraById(id);
+        if (!compra.isPresent()) {
+            return new ResponseEntity("Compra não encontrada", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(compra.map(CompraDTO::create));
     }
 
     public Compra converter(CompraDTO dto) {

@@ -9,11 +9,10 @@ import com.example.cinemaapi.service.SalaService;
 import com.example.cinemaapi.service.TipoAssentoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +31,15 @@ public class AssentoController {
     public ResponseEntity get() {
         List<Assento> assentos = service.getAssentos();
         return ResponseEntity.ok(assentos.stream().map(AssentoDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<Assento> assento = service.getAssentoById(id);
+        if (!assento.isPresent()) {
+            return new ResponseEntity("Assento não encontrado", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(assento.map(AssentoDTO::create));
     }
 
     public Assento converter(AssentoDTO dto) {

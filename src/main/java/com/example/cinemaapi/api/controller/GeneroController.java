@@ -5,13 +5,12 @@ import com.example.cinemaapi.model.entity.Genero;
 import com.example.cinemaapi.service.GeneroService;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/generos")
@@ -25,6 +24,15 @@ public class GeneroController {
     public ResponseEntity get() {
         List<Genero> generos = service.getGeneros();
         return ResponseEntity.ok(generos.stream().map(GeneroDTO::create).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id) {
+        Optional<Genero> genero = service.getGeneroById(id);
+        if (!genero.isPresent()) {
+            return new ResponseEntity("Gênero não encontrado", HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(genero.map(GeneroDTO::create));
     }
 
     public Genero converter(GeneroDTO dto) {

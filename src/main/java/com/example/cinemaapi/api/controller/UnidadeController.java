@@ -1,7 +1,5 @@
 package com.example.cinemaapi.api.controller;
 
-import com.example.cinemaapi.api.dto.SessaoDTO;
-import com.example.cinemaapi.model.entity.Sessao;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.UnidadeDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Unidade;
 import com.example.cinemaapi.service.UnidadeService;
 
@@ -35,6 +34,17 @@ public class UnidadeController {
             return new ResponseEntity("Unidade não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(unidade.map(UnidadeDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody UnidadeDTO dto) {
+        try {
+            Unidade unidade = converter(dto);
+            unidade = service.salvar(unidade);
+            return new ResponseEntity(unidade, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Unidade converter(UnidadeDTO dto) {

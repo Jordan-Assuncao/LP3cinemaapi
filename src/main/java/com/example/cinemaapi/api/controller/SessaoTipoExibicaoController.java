@@ -1,8 +1,6 @@
 package com.example.cinemaapi.api.controller;
 
-import com.example.cinemaapi.api.dto.SessaoDTO;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.SessaoTipoExibicaoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Sessao;
 import com.example.cinemaapi.model.entity.SessaoTipoExibicao;
 import com.example.cinemaapi.model.entity.TipoExibicao;
@@ -41,6 +40,17 @@ public class SessaoTipoExibicaoController {
             return new ResponseEntity("Sessão tipo exibição não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(sessaoTipoExibicao.map(SessaoTipoExibicaoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody SessaoTipoExibicaoDTO dto) {
+        try {
+            SessaoTipoExibicao sessaoTipoExibicao = converter(dto);
+            sessaoTipoExibicao = service.salvar(sessaoTipoExibicao);
+            return new ResponseEntity(sessaoTipoExibicao, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public SessaoTipoExibicao converter(SessaoTipoExibicaoDTO dto) {

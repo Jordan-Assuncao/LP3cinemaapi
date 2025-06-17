@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.FilmeDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.ClassificacaoIndicativa;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.service.ClassificacaoIndicativaService;
@@ -37,6 +38,17 @@ public class FilmeController {
             return new ResponseEntity("Filme não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(filme.map(FilmeDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody FilmeDTO dto) {
+        try {
+            Filme filme = converter(dto);
+            filme = service.salvar(filme);
+            return new ResponseEntity(filme, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Filme converter(FilmeDTO dto) {

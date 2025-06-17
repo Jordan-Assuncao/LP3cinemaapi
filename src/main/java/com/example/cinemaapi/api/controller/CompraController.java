@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.CompraDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.*;
 import com.example.cinemaapi.service.ClienteService;
 import com.example.cinemaapi.service.CompraService;
@@ -36,6 +37,17 @@ public class CompraController {
             return new ResponseEntity("Compra não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(compra.map(CompraDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody CompraDTO dto) {
+        try {
+            Compra compra = converter(dto);
+            compra = service.salvar(compra);
+            return new ResponseEntity(compra, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Compra converter(CompraDTO dto) {

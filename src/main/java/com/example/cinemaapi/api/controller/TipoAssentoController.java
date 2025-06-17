@@ -1,6 +1,5 @@
 package com.example.cinemaapi.api.controller;
 
-import com.example.cinemaapi.api.dto.SessaoDTO;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.TipoAssentoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.TipoAssento;
 import com.example.cinemaapi.service.TipoAssentoService;
 
@@ -34,6 +34,17 @@ public class TipoAssentoController {
             return new ResponseEntity("Tipo assento não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(tipoAssento.map(TipoAssentoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody TipoAssentoDTO dto) {
+        try {
+            TipoAssento tipoAssento = converter(dto);
+            tipoAssento = service.salvar(tipoAssento);
+            return new ResponseEntity(tipoAssento, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public TipoAssento converter(TipoAssentoDTO dto) {

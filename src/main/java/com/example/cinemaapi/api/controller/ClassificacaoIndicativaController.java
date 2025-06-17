@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.ClassificacaoIndicativaDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.ClassificacaoIndicativa;
 import com.example.cinemaapi.service.ClassificacaoIndicativaService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,17 @@ public class ClassificacaoIndicativaController {
             return new ResponseEntity("Classificação indicativa não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(classificacaoIndicativa.map(ClassificacaoIndicativaDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody ClassificacaoIndicativaDTO dto) {
+        try {
+            ClassificacaoIndicativa classificacaoIndicativa = converter(dto);
+            classificacaoIndicativa = service.salvar(classificacaoIndicativa);
+            return new ResponseEntity(classificacaoIndicativa, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public ClassificacaoIndicativa converter(ClassificacaoIndicativaDTO dto) {

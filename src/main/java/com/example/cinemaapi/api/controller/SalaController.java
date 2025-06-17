@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.SalaDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Sala;
 import com.example.cinemaapi.model.entity.Unidade;
 import com.example.cinemaapi.service.SalaService;
@@ -36,6 +37,17 @@ public class SalaController {
             return new ResponseEntity("Sala não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(sala.map(SalaDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody SalaDTO dto) {
+        try {
+            Sala sala = converter(dto);
+            sala = service.salvar(sala);
+            return new ResponseEntity(sala, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Sala converter(SalaDTO dto) {

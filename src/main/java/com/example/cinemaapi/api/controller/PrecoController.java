@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.PrecoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Preco;
 import com.example.cinemaapi.service.PrecoService;
 
@@ -33,6 +34,17 @@ public class PrecoController {
             return new ResponseEntity("Preço não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(preco.map(PrecoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody PrecoDTO dto) {
+        try {
+            Preco preco = converter(dto);
+            preco = service.salvar(preco);
+            return new ResponseEntity(preco, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Preco converter(PrecoDTO dto) {

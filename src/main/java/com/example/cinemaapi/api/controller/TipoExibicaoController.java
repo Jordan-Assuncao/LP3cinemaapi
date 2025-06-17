@@ -1,6 +1,5 @@
 package com.example.cinemaapi.api.controller;
 
-import com.example.cinemaapi.api.dto.SessaoDTO;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.TipoExibicaoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.TipoExibicao;
 import com.example.cinemaapi.service.TipoExibicaoService;
 
@@ -34,6 +34,17 @@ public class TipoExibicaoController {
             return new ResponseEntity("Tipo exibição não encontrada.", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(tipoExibicao.map(TipoExibicaoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody TipoExibicaoDTO dto) {
+        try {
+            TipoExibicao tipoExibicao = converter(dto);
+            tipoExibicao = service.salvar(tipoExibicao);
+            return new ResponseEntity(tipoExibicao, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public TipoExibicao converter(TipoExibicaoDTO dto) {

@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.GeneroDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Genero;
 import com.example.cinemaapi.service.GeneroService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,17 @@ public class GeneroController {
             return new ResponseEntity("Gênero não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(genero.map(GeneroDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody GeneroDTO dto) {
+        try {
+            Genero genero = converter(dto);
+            genero = service.salvar(genero);
+            return new ResponseEntity(genero, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Genero converter(GeneroDTO dto) {

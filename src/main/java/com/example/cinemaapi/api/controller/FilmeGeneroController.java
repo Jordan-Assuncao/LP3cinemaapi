@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.FilmeGeneroDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.model.entity.FilmeGenero;
 import com.example.cinemaapi.model.entity.Genero;
@@ -40,6 +41,17 @@ public class FilmeGeneroController {
             return new ResponseEntity("Filme gênero não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(filmeGenero.map(FilmeGeneroDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody FilmeGeneroDTO dto) {
+        try {
+            FilmeGenero filmeGenero = converter(dto);
+            filmeGenero = service.salvar(filmeGenero);
+            return new ResponseEntity(filmeGenero, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public FilmeGenero converter(FilmeGeneroDTO dto) {

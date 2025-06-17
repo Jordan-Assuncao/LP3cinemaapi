@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.IngressoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Assento;
 import com.example.cinemaapi.model.entity.Ingresso;
 import com.example.cinemaapi.model.entity.Sessao;
@@ -43,6 +44,17 @@ public class IngressoController {
             return new ResponseEntity("Ingresso não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(ingresso.map(IngressoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody IngressoDTO dto) {
+        try {
+            Ingresso ingresso = converter(dto);
+            ingresso = service.salvar(ingresso);
+            return new ResponseEntity(ingresso, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Ingresso converter(IngressoDTO dto) {

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.cinemaapi.api.dto.SessaoDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.model.entity.Preco;
 import com.example.cinemaapi.model.entity.Sala;
@@ -42,6 +43,17 @@ public class SessaoController {
             return new ResponseEntity("Sessão não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(sessao.map(SessaoDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody SessaoDTO dto) {
+        try {
+            Sessao sessao = converter(dto);
+            sessao = service.salvar(sessao);
+            return new ResponseEntity(sessao, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Sessao converter(SessaoDTO dto) {

@@ -1,6 +1,7 @@
 package com.example.cinemaapi.api.controller;
 
 import com.example.cinemaapi.api.dto.ClienteDTO;
+import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Cliente;
 import com.example.cinemaapi.service.ClienteService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,17 @@ public class ClienteController {
             return new ResponseEntity("Cliente não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(cliente.map(ClienteDTO::create));
+    }
+
+    @PostMapping()
+    public ResponseEntity post(@RequestBody ClienteDTO dto) {
+        try {
+            Cliente cliente = converter(dto);
+            cliente = service.salvar(cliente);
+            return new ResponseEntity(cliente, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     public Cliente converter(ClienteDTO dto) {

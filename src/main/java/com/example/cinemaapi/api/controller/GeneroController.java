@@ -47,6 +47,21 @@ public class GeneroController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody GeneroDTO dto) {
+        if (!service.getGeneroById(id).isPresent()) {
+            return new ResponseEntity("Gênero não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Genero genero = converter(dto);
+            genero.setId(id);
+            service.salvar(genero);
+            return ResponseEntity.ok(genero);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Genero converter(GeneroDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Genero genero = modelMapper.map(dto, Genero.class);

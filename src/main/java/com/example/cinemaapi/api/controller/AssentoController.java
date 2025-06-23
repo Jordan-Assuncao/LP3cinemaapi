@@ -54,6 +54,21 @@ public class AssentoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AssentoDTO dto) {
+        if (!service.getAssentoById(id).isPresent()) {
+            return new ResponseEntity("Assento não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Assento assento = converter(dto);
+            assento.setId(id);
+            service.salvar(assento);
+            return ResponseEntity.ok(assento);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Assento converter(AssentoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Assento assento = modelMapper.map(dto, Assento.class);

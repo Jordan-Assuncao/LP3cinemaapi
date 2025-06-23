@@ -47,6 +47,21 @@ public class TipoAssentoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody TipoAssentoDTO dto) {
+        if (!service.getTipoAssentoById(id).isPresent()) {
+            return new ResponseEntity("Tipo Assento não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            TipoAssento tipoAssento = converter(dto);
+            tipoAssento.setId(id);
+            service.salvar(tipoAssento);
+            return ResponseEntity.ok(tipoAssento);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public TipoAssento converter(TipoAssentoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         TipoAssento tipoAssento = modelMapper.map(dto, TipoAssento.class);

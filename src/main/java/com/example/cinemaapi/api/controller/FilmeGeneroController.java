@@ -54,6 +54,21 @@ public class FilmeGeneroController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody FilmeGeneroDTO dto) {
+        if (!service.getFilmeGeneroById(id).isPresent()) {
+            return new ResponseEntity("Filme Gênero não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            FilmeGenero filmeGenero = converter(dto);
+            filmeGenero.setId(id);
+            service.salvar(filmeGenero);
+            return ResponseEntity.ok(filmeGenero);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public FilmeGenero converter(FilmeGeneroDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         FilmeGenero filmeGenero = modelMapper.map(dto, FilmeGenero.class);

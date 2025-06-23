@@ -47,6 +47,21 @@ public class TipoExibicaoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody TipoExibicaoDTO dto) {
+        if (!service.getTipoExibicaoById(id).isPresent()) {
+            return new ResponseEntity("Tipo exibição não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            TipoExibicao tipoExibicao = converter(dto);
+            tipoExibicao.setId(id);
+            service.salvar(tipoExibicao);
+            return ResponseEntity.ok(tipoExibicao);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public TipoExibicao converter(TipoExibicaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         TipoExibicao tipoExibicao = modelMapper.map(dto, TipoExibicao.class);

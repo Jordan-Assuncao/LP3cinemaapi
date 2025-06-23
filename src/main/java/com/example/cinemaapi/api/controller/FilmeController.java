@@ -51,6 +51,21 @@ public class FilmeController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody FilmeDTO dto) {
+        if (!service.getFilmeById(id).isPresent()) {
+            return new ResponseEntity("Filme não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Filme filme = converter(dto);
+            filme.setId(id);
+            service.salvar(filme);
+            return ResponseEntity.ok(filme);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Filme converter(FilmeDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Filme filme = modelMapper.map(dto, Filme.class);

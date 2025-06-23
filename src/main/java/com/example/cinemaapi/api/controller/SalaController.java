@@ -50,6 +50,21 @@ public class SalaController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SalaDTO dto) {
+        if (!service.getSalaById(id).isPresent()) {
+            return new ResponseEntity("Sala não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Sala sala = converter(dto);
+            sala.setId(id);
+            service.salvar(sala);
+            return ResponseEntity.ok(sala);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Sala converter(SalaDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Sala sala = modelMapper.map(dto, Sala.class);

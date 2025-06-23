@@ -57,6 +57,21 @@ public class IngressoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody IngressoDTO dto) {
+        if (!service.getIngressoById(id).isPresent()) {
+            return new ResponseEntity("Ingresso não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Ingresso ingresso = converter(dto);
+            ingresso.setId(id);
+            service.salvar(ingresso);
+            return ResponseEntity.ok(ingresso);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Ingresso converter(IngressoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Ingresso ingresso = modelMapper.map(dto, Ingresso.class);

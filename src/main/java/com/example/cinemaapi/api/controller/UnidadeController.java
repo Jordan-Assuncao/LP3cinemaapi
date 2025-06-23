@@ -47,6 +47,21 @@ public class UnidadeController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody UnidadeDTO dto) {
+        if (!service.getUnidadeById(id).isPresent()) {
+            return new ResponseEntity("Unidade não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Unidade unidade = converter(dto);
+            unidade.setId(id);
+            service.salvar(unidade);
+            return ResponseEntity.ok(unidade);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Unidade converter(UnidadeDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Unidade unidade = modelMapper.map(dto, Unidade.class);

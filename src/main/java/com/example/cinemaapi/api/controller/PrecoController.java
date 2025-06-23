@@ -47,6 +47,21 @@ public class PrecoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody PrecoDTO dto) {
+        if (!service.getPrecoById(id).isPresent()) {
+            return new ResponseEntity("Preço não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Preco preco = converter(dto);
+            preco.setId(id);
+            service.salvar(preco);
+            return ResponseEntity.ok(preco);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Preco converter(PrecoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Preco preco = modelMapper.map(dto, Preco.class);

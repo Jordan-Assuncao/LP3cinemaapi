@@ -56,6 +56,21 @@ public class SessaoController {
         }
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SessaoDTO dto) {
+        if (!service.getSessaoById(id).isPresent()) {
+            return new ResponseEntity("Sessao não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            Sessao sessao = converter(dto);
+            sessao.setId(id);
+            service.salvar(sessao);
+            return ResponseEntity.ok(sessao);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Sessao converter(SessaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Sessao sessao = modelMapper.map(dto, Sessao.class);

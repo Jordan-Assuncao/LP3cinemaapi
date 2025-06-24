@@ -62,6 +62,20 @@ public class ClassificacaoIndicativaController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<ClassificacaoIndicativa> classificacaoIndicativa = service.getClassificacaoIndicativaById(id);
+        if (!classificacaoIndicativa.isPresent()) {
+            return new ResponseEntity("Classificação Indicativa não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(classificacaoIndicativa.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public ClassificacaoIndicativa converter(ClassificacaoIndicativaDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         ClassificacaoIndicativa classificacaoIndicativa = modelMapper.map(dto, ClassificacaoIndicativa.class);

@@ -68,6 +68,20 @@ public class SessaoTipoExibicaoController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<SessaoTipoExibicao> sessaoTipoExibicao = service.getSessaoTipoExibicaoById(id);
+        if (!sessaoTipoExibicao.isPresent()) {
+            return new ResponseEntity("Sessão tipo exibição não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(sessaoTipoExibicao.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public SessaoTipoExibicao converter(SessaoTipoExibicaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         SessaoTipoExibicao sessaoTipoExibicao = modelMapper.map(dto, SessaoTipoExibicao.class);

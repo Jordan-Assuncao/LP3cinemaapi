@@ -69,6 +69,20 @@ public class AssentoController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<Assento> assento = service.getAssentoById(id);
+        if (!assento.isPresent()) {
+            return new ResponseEntity("Assento não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(assento.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Assento converter(AssentoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Assento assento = modelMapper.map(dto, Assento.class);

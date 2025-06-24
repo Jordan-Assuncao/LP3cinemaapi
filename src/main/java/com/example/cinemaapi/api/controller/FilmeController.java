@@ -66,6 +66,20 @@ public class FilmeController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<Filme> filme = service.getFilmeById(id);
+        if (!filme.isPresent()) {
+            return new ResponseEntity("Filme não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(filme.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Filme converter(FilmeDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Filme filme = modelMapper.map(dto, Filme.class);

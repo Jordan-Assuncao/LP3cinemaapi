@@ -62,6 +62,20 @@ public class TipoAssentoController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<TipoAssento> tipoAssento = service.getTipoAssentoById(id);
+        if (!tipoAssento.isPresent()) {
+            return new ResponseEntity("Tipo Assento não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(tipoAssento.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public TipoAssento converter(TipoAssentoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         TipoAssento tipoAssento = modelMapper.map(dto, TipoAssento.class);

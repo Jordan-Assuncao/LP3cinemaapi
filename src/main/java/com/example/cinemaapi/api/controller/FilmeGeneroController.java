@@ -69,6 +69,20 @@ public class FilmeGeneroController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<FilmeGenero> filmeGenero = service.getFilmeGeneroById(id);
+        if (!filmeGenero.isPresent()) {
+            return new ResponseEntity("Filme gênero não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(filmeGenero.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public FilmeGenero converter(FilmeGeneroDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         FilmeGenero filmeGenero = modelMapper.map(dto, FilmeGenero.class);

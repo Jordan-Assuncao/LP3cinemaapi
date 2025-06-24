@@ -62,6 +62,20 @@ public class TipoExibicaoController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<TipoExibicao> tipoExibicao = service.getTipoExibicaoById(id);
+        if (!tipoExibicao.isPresent()) {
+            return new ResponseEntity("Tipo exibição não encontrado", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(tipoExibicao.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public TipoExibicao converter(TipoExibicaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         TipoExibicao tipoExibicao = modelMapper.map(dto, TipoExibicao.class);

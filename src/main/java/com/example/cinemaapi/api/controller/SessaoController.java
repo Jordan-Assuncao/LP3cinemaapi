@@ -71,6 +71,20 @@ public class SessaoController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<Sessao> sessao = service.getSessaoById(id);
+        if (!sessao.isPresent()) {
+            return new ResponseEntity("Sessão não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(sessao.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Sessao converter(SessaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Sessao sessao = modelMapper.map(dto, Sessao.class);

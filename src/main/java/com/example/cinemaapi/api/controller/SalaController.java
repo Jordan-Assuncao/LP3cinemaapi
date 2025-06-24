@@ -65,6 +65,20 @@ public class SalaController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity excluir(@PathVariable("id") Long id) {
+        Optional<Sala> sala = service.getSalaById(id);
+        if (!sala.isPresent()) {
+            return new ResponseEntity("Sala não encontrada", HttpStatus.NOT_FOUND);
+        }
+        try {
+            service.excluir(sala.get());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     public Sala converter(SalaDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         Sala sala = modelMapper.map(dto, Sala.class);

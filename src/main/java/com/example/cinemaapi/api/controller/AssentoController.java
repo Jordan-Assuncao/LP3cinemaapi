@@ -8,6 +8,10 @@ import com.example.cinemaapi.model.entity.TipoAssento;
 import com.example.cinemaapi.service.AssentoService;
 import com.example.cinemaapi.service.SalaService;
 import com.example.cinemaapi.service.TipoAssentoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/assentos")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Assentos")
 public class AssentoController {
 
     private final TipoAssentoService tipoAssentoService;
@@ -29,12 +34,22 @@ public class AssentoController {
     private final AssentoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Assentos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Assentos encontrados"),
+            @ApiResponse(code = 404, message = "Assentos não encontrados")
+    })
     public ResponseEntity get() {
         List<Assento> assentos = service.getAssentos();
         return ResponseEntity.ok(assentos.stream().map(AssentoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Assento")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Assento encontrado"),
+            @ApiResponse(code = 404, message = "Assento não encontrado")
+    })
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Assento> assento = service.getAssentoById(id);
         if (!assento.isPresent()) {
@@ -44,6 +59,10 @@ public class AssentoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Assento")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Assento salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o assento")})
     public ResponseEntity post(@RequestBody AssentoDTO dto) {
         try {
             Assento assento = converter(dto);
@@ -55,6 +74,11 @@ public class AssentoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Assento")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Assento atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar assento")
+    })
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AssentoDTO dto) {
         if (!service.getAssentoById(id).isPresent()) {
             return new ResponseEntity("Assento não encontrado", HttpStatus.NOT_FOUND);
@@ -70,6 +94,11 @@ public class AssentoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Assento")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Assento excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir Assento")
+    })
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Assento> assento = service.getAssentoById(id);
         if (!assento.isPresent()) {

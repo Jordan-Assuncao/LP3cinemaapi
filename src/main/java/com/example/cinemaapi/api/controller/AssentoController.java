@@ -37,8 +37,7 @@ public class AssentoController {
     @ApiOperation("Obter detalhes de Assentos")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Assentos encontrados"),
-            @ApiResponse(code = 404, message = "Assentos não encontrados")
-    })
+            @ApiResponse(code = 404, message = "Assentos não encontrados")})
     public ResponseEntity get() {
         List<Assento> assentos = service.getAssentos();
         return ResponseEntity.ok(assentos.stream().map(AssentoDTO::create).collect(Collectors.toList()));
@@ -48,8 +47,7 @@ public class AssentoController {
     @ApiOperation("Obter detalhes de um Assento")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Assento encontrado"),
-            @ApiResponse(code = 404, message = "Assento não encontrado")
-    })
+            @ApiResponse(code = 404, message = "Assento não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Assento> assento = service.getAssentoById(id);
         if (!assento.isPresent()) {
@@ -77,8 +75,7 @@ public class AssentoController {
     @ApiOperation("Atualizar um Assento")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Assento atualizado"),
-            @ApiResponse(code = 400, message = "Erro ao atualizar assento")
-    })
+            @ApiResponse(code = 400, message = "Erro ao atualizar assento")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody AssentoDTO dto) {
         if (!service.getAssentoById(id).isPresent()) {
             return new ResponseEntity("Assento não encontrado", HttpStatus.NOT_FOUND);
@@ -97,8 +94,7 @@ public class AssentoController {
     @ApiOperation("Excluir um Assento")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Assento excluido com sucesso"),
-            @ApiResponse(code = 400, message = "Erro ao excluir Assento")
-    })
+            @ApiResponse(code = 400, message = "Erro ao excluir Assento")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Assento> assento = service.getAssentoById(id);
         if (!assento.isPresent()) {

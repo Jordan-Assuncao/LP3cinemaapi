@@ -17,10 +17,16 @@ import com.example.cinemaapi.service.SessaoService;
 import com.example.cinemaapi.service.SessaoTipoExibicaoService;
 import com.example.cinemaapi.service.TipoExibicaoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/sessaotipoexibicoes")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Sessões Tipo de Exibições")
 public class SessaoTipoExibicaoController {
 
     private final SessaoService sessaoService;
@@ -28,12 +34,20 @@ public class SessaoTipoExibicaoController {
     private final SessaoTipoExibicaoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Sessão Tipo de Exibição")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessões tipo de exibições encontrados"),
+            @ApiResponse(code = 404, message = "Sessões tipo de exibições não encontrados")})
     public ResponseEntity get() {
         List<SessaoTipoExibicao> sessaoTipoExibicaos = service.getSessaoTipoExibicaos();
         return ResponseEntity.ok(sessaoTipoExibicaos.stream().map(SessaoTipoExibicaoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de uma Sessão Tipo de Exibição")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessão Tipo de Exibição encontrado"),
+            @ApiResponse(code = 404, message = "Sessão Tipo de Exibição não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<SessaoTipoExibicao> sessaoTipoExibicao = service.getSessaoTipoExibicaoById(id);
         if (!sessaoTipoExibicao.isPresent()) {
@@ -43,6 +57,10 @@ public class SessaoTipoExibicaoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva uma nova Sessão Tipo de Exibição")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sessão Tipo de Exibição salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Sessão Tipo de Exibição")})
     public ResponseEntity post(@RequestBody SessaoTipoExibicaoDTO dto) {
         try {
             SessaoTipoExibicao sessaoTipoExibicao = converter(dto);
@@ -54,6 +72,10 @@ public class SessaoTipoExibicaoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar uma Sessão Tipo de Exibição")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sessão Tipo de Exibição atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Sessão Tipo de Exibição")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SessaoTipoExibicaoDTO dto) {
         if (!service.getSessaoTipoExibicaoById(id).isPresent()) {
             return new ResponseEntity("Sessão tipo de exibição não encontrado", HttpStatus.NOT_FOUND);
@@ -69,6 +91,10 @@ public class SessaoTipoExibicaoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir uma Sessão Tipo de Exibição")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessão Tipo de Exibição excluida com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir a Sessão Tipo de Exibição")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<SessaoTipoExibicao> sessaoTipoExibicao = service.getSessaoTipoExibicaoById(id);
         if (!sessaoTipoExibicao.isPresent()) {

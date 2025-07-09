@@ -8,6 +8,12 @@ import com.example.cinemaapi.model.entity.Sessao;
 import com.example.cinemaapi.model.entity.Compra;
 import com.example.cinemaapi.service.AssentoService;
 import com.example.cinemaapi.service.SessaoService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import com.example.cinemaapi.service.CompraService;
 import com.example.cinemaapi.service.IngressoService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/ingressos")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Ingressos")
 public class IngressoController {
 
     private final SessaoService sessaoService;
@@ -32,12 +39,20 @@ public class IngressoController {
     private final IngressoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Ingressos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ingressos encontrados"),
+            @ApiResponse(code = 404, message = "Ingressos não encontrados")})
     public ResponseEntity get() {
         List<Ingresso> ingressos = service.getIngressos();
         return ResponseEntity.ok(ingressos.stream().map(IngressoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Ingresso")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ingresso encontrado"),
+            @ApiResponse(code = 404, message = "Ingresso não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Ingresso> ingresso = service.getIngressoById(id);
         if (!ingresso.isPresent()) {
@@ -47,6 +62,10 @@ public class IngressoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Ingresso")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Ingresso salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar Ingresso")})
     public ResponseEntity post(@RequestBody IngressoDTO dto) {
         try {
             Ingresso ingresso = converter(dto);
@@ -58,6 +77,10 @@ public class IngressoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Ingresso")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Ingresso atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Ingresso")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody IngressoDTO dto) {
         if (!service.getIngressoById(id).isPresent()) {
             return new ResponseEntity("Ingresso não encontrado", HttpStatus.NOT_FOUND);
@@ -73,6 +96,10 @@ public class IngressoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Ingresso")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Ingresso excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir Ingresso")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Ingresso> ingresso = service.getIngressoById(id);
         if (!ingresso.isPresent()) {

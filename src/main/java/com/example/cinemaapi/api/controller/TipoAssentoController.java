@@ -13,21 +13,35 @@ import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.TipoAssento;
 import com.example.cinemaapi.service.TipoAssentoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/tipoassentos")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Tipo de Assentos")
 public class TipoAssentoController {
 
     private final TipoAssentoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Tipos de Assento")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Tipos de Assento encontrados"),
+            @ApiResponse(code = 404, message = "Tipos de Assento não encontrados")})
     public ResponseEntity get() {
         List<TipoAssento> tipoAssentos = service.getTipoAssentos();
         return ResponseEntity.ok(tipoAssentos.stream().map(TipoAssentoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Tipo de Assento")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Tipo de Assento encontrado"),
+            @ApiResponse(code = 404, message = "Tipo de Assento não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<TipoAssento> tipoAssento = service.getTipoAssentoById(id);
         if (!tipoAssento.isPresent()) {
@@ -37,6 +51,10 @@ public class TipoAssentoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Tipo de Assento")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Tipo de Assento salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Tipo de Assento")})
     public ResponseEntity post(@RequestBody TipoAssentoDTO dto) {
         try {
             TipoAssento tipoAssento = converter(dto);
@@ -48,6 +66,10 @@ public class TipoAssentoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Tipo de Assento")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Tipo de Assento atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Tipo de Assento")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody TipoAssentoDTO dto) {
         if (!service.getTipoAssentoById(id).isPresent()) {
             return new ResponseEntity("Tipo Assento não encontrado", HttpStatus.NOT_FOUND);
@@ -63,6 +85,10 @@ public class TipoAssentoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Tipo de Assento")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Tipo de Assento excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir o Tipo de Assento")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<TipoAssento> tipoAssento = service.getTipoAssentoById(id);
         if (!tipoAssento.isPresent()) {

@@ -13,21 +13,35 @@ import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Preco;
 import com.example.cinemaapi.service.PrecoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/precos")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Preços")
 public class PrecoController {
 
     private final PrecoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Preços")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Preços encontrados"),
+            @ApiResponse(code = 404, message = "Preços não encontrados")})
     public ResponseEntity get() {
         List<Preco> precos = service.getPrecos();
         return ResponseEntity.ok(precos.stream().map(PrecoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Preço")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Preço encontrado"),
+            @ApiResponse(code = 404, message = "Preço não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Preco> preco = service.getPrecoById(id);
         if (!preco.isPresent()) {
@@ -37,6 +51,10 @@ public class PrecoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Preço")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Preço salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Preço")})
     public ResponseEntity post(@RequestBody PrecoDTO dto) {
         try {
             Preco preco = converter(dto);
@@ -48,6 +66,10 @@ public class PrecoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Preço")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Preço atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Preço")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody PrecoDTO dto) {
         if (!service.getPrecoById(id).isPresent()) {
             return new ResponseEntity("Preço não encontrado", HttpStatus.NOT_FOUND);
@@ -63,6 +85,10 @@ public class PrecoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Preço")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Preço excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir Preço")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Preco> preco = service.getPrecoById(id);
         if (!preco.isPresent()) {

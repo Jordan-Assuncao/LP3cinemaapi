@@ -19,10 +19,16 @@ import com.example.cinemaapi.service.PrecoService;
 import com.example.cinemaapi.service.SalaService;
 import com.example.cinemaapi.service.SessaoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/sessoes")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Sessões")
 public class SessaoController {
 
     private final FilmeService filmeService;
@@ -31,12 +37,20 @@ public class SessaoController {
     private final SessaoService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Sessões")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessões encontrados"),
+            @ApiResponse(code = 404, message = "Sessões não encontradas")})
     public ResponseEntity get() {
         List<Sessao> sessaos = service.getSessaos();
         return ResponseEntity.ok(sessaos.stream().map(SessaoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessão encontrada"),
+            @ApiResponse(code = 404, message = "Sessão não encontrada")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Sessao> sessao = service.getSessaoById(id);
         if (!sessao.isPresent()) {
@@ -46,6 +60,10 @@ public class SessaoController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva uma nova Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sessão salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Sessão")})
     public ResponseEntity post(@RequestBody SessaoDTO dto) {
         try {
             Sessao sessao = converter(dto);
@@ -57,6 +75,10 @@ public class SessaoController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar uma Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sessão atualizada"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Sessão")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SessaoDTO dto) {
         if (!service.getSessaoById(id).isPresent()) {
             return new ResponseEntity("Sessao não encontrada", HttpStatus.NOT_FOUND);
@@ -72,6 +94,10 @@ public class SessaoController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir uma Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sessão excluida com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir a Sessão")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Sessao> sessao = service.getSessaoById(id);
         if (!sessao.isPresent()) {

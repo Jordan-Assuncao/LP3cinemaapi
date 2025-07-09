@@ -6,6 +6,11 @@ import com.example.cinemaapi.model.entity.ClassificacaoIndicativa;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.service.ClassificacaoIndicativaService;
 import com.example.cinemaapi.service.FilmeService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -20,18 +25,27 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/filmes")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Filmes")
 public class FilmeController {
 
     private final ClassificacaoIndicativaService classificacaoIndicativaService;
     private final FilmeService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Filmes")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filmes encontrados"),
+            @ApiResponse(code = 404, message = "Filmes não encontrados")})
     public ResponseEntity get() {
         List<Filme> filmes = service.getFilmes();
         return ResponseEntity.ok(filmes.stream().map(FilmeDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Filme")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filme encontrado"),
+            @ApiResponse(code = 404, message = "Filme não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Filme> filme = service.getFilmeById(id);
         if (!filme.isPresent()) {
@@ -41,6 +55,10 @@ public class FilmeController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Filme")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Filme salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Filme")})
     public ResponseEntity post(@RequestBody FilmeDTO dto) {
         try {
             Filme filme = converter(dto);
@@ -52,6 +70,10 @@ public class FilmeController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Filme")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Filme atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Filme")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody FilmeDTO dto) {
         if (!service.getFilmeById(id).isPresent()) {
             return new ResponseEntity("Filme não encontrado", HttpStatus.NOT_FOUND);
@@ -67,6 +89,10 @@ public class FilmeController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Filme")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filme excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir Filme")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Filme> filme = service.getFilmeById(id);
         if (!filme.isPresent()) {

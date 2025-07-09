@@ -8,6 +8,11 @@ import com.example.cinemaapi.model.entity.Genero;
 import com.example.cinemaapi.service.FilmeGeneroService;
 import com.example.cinemaapi.service.FilmeService;
 import com.example.cinemaapi.service.GeneroService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/filmegeneros")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Filme Gêneros")
 public class FilmeGeneroController {
 
     private final GeneroService generoService;
@@ -29,12 +35,20 @@ public class FilmeGeneroController {
     private final FilmeGeneroService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Filme Gêneros")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filme gêneros encontrados"),
+            @ApiResponse(code = 404, message = "Filme gêneros não encontrados")})
     public ResponseEntity get() {
         List<FilmeGenero> filmeGeneros = service.getFilmeGeneros();
         return ResponseEntity.ok(filmeGeneros.stream().map(FilmeGeneroDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de um Filme Gênero")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filme Gênero encontrado"),
+            @ApiResponse(code = 404, message = "Filme Gênero não encontrado")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<FilmeGenero> filmeGenero = service.getFilmeGeneroById(id);
         if (!filmeGenero.isPresent()) {
@@ -44,6 +58,10 @@ public class FilmeGeneroController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva um novo Filme Gênero")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Filme Gênero salvo com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar o Filme Gênero")})
     public ResponseEntity post(@RequestBody FilmeGeneroDTO dto) {
         try {
             FilmeGenero filmeGenero = converter(dto);
@@ -55,6 +73,10 @@ public class FilmeGeneroController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar um Filme Gênero")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Filme Gênero atualizado"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Filme Gênero")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody FilmeGeneroDTO dto) {
         if (!service.getFilmeGeneroById(id).isPresent()) {
             return new ResponseEntity("Filme Gênero não encontrado", HttpStatus.NOT_FOUND);
@@ -70,6 +92,10 @@ public class FilmeGeneroController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir um Filme Gênero")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Filme G~enero excluido com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir Filme Gênero")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<FilmeGenero> filmeGenero = service.getFilmeGeneroById(id);
         if (!filmeGenero.isPresent()) {

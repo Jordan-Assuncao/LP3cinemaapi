@@ -15,22 +15,36 @@ import com.example.cinemaapi.model.entity.Unidade;
 import com.example.cinemaapi.service.SalaService;
 import com.example.cinemaapi.service.UnidadeService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/salas")
 @RequiredArgsConstructor
 @CrossOrigin
+@Api("API de Salas")
 public class SalaController {
 
     private final UnidadeService unidadeService;
     private final SalaService service;
 
     @GetMapping()
+    @ApiOperation("Obter detalhes de Salas")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Salas encontradas"),
+            @ApiResponse(code = 404, message = "Salas não encontradas")})
     public ResponseEntity get() {
         List<Sala> salas = service.getSalas();
         return ResponseEntity.ok(salas.stream().map(SalaDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("Obter detalhes de uma Sala")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sala encontrada"),
+            @ApiResponse(code = 404, message = "Sala não encontrada")})
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Sala> sala = service.getSalaById(id);
         if (!sala.isPresent()) {
@@ -40,6 +54,10 @@ public class SalaController {
     }
 
     @PostMapping()
+    @ApiOperation("Salva uma nova Sala ")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sala salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar a Sala")})
     public ResponseEntity post(@RequestBody SalaDTO dto) {
         try {
             Sala sala = converter(dto);
@@ -51,6 +69,10 @@ public class SalaController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation("Atualizar uma Sala")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Sala atualizada"),
+            @ApiResponse(code = 400, message = "Erro ao atualizar Sala")})
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SalaDTO dto) {
         if (!service.getSalaById(id).isPresent()) {
             return new ResponseEntity("Sala não encontrada", HttpStatus.NOT_FOUND);
@@ -66,6 +88,10 @@ public class SalaController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation("Excluir uma Sala")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Sala excluida com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao excluir a Sala")})
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Sala> sala = service.getSalaById(id);
         if (!sala.isPresent()) {

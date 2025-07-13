@@ -118,7 +118,7 @@ public class FilmeGeneroController {
     @DeleteMapping("{id}")
     @ApiOperation("Excluir um Filme Gênero")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Filme G~enero excluido com sucesso"),
+            @ApiResponse(code = 200, message = "Filme Gênero excluido com sucesso"),
             @ApiResponse(code = 400, message = "Erro ao excluir Filme Gênero") })
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<FilmeGenero> filmeGenero = service.getFilmeGeneroById(id);

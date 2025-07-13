@@ -1,6 +1,8 @@
 package com.example.cinemaapi.api.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,8 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.cinemaapi.api.dto.FilmeGeneroDTO;
 import com.example.cinemaapi.api.dto.SessaoTipoExibicaoDTO;
 import com.example.cinemaapi.exception.RegraNegocioException;
+import com.example.cinemaapi.model.entity.FilmeGenero;
 import com.example.cinemaapi.model.entity.Sessao;
 import com.example.cinemaapi.model.entity.SessaoTipoExibicao;
 import com.example.cinemaapi.model.entity.TipoExibicao;
@@ -66,6 +71,27 @@ public class SessaoTipoExibicaoController {
             SessaoTipoExibicao sessaoTipoExibicao = converter(dto);
             sessaoTipoExibicao = service.salvar(sessaoTipoExibicao);
             return new ResponseEntity(sessaoTipoExibicao, HttpStatus.CREATED);
+        } catch (RegraNegocioException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/lote")
+    @ApiOperation("Salva vários vínculos Sessão-Tipo de Exibição de uma vez")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Vínculos salvos com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar algum vínculo")
+    })
+    public ResponseEntity<?> salvarLote(@RequestBody List<SessaoTipoExibicaoDTO> dtos) {
+        try {
+            List<SessaoTipoExibicao> vinculados = new ArrayList<>();
+
+            for (SessaoTipoExibicaoDTO dto : dtos) {
+                SessaoTipoExibicao ste = converter(dto); 
+                vinculados.add(service.salvar(ste));
+            }
+
+            return new ResponseEntity<>(vinculados, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -5,6 +5,7 @@ import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.model.entity.FilmeGenero;
 import com.example.cinemaapi.model.entity.Genero;
+import com.example.cinemaapi.model.repository.FilmeGeneroRepository;
 import com.example.cinemaapi.service.FilmeGeneroService;
 import com.example.cinemaapi.service.FilmeService;
 import com.example.cinemaapi.service.GeneroService;
@@ -34,6 +35,7 @@ public class FilmeGeneroController {
     private final GeneroService generoService;
     private final FilmeService filmeService;
     private final FilmeGeneroService service;
+    private final FilmeGeneroRepository filmeGeneroRepository;
 
     @GetMapping()
     @ApiOperation("Obter detalhes de Filme Gêneros")

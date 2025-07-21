@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import com.example.cinemaapi.model.entity.Filme;
 import com.example.cinemaapi.model.entity.Preco;
 import com.example.cinemaapi.model.entity.Sala;
 import com.example.cinemaapi.model.entity.Sessao;
+import com.example.cinemaapi.model.entity.SessaoTipoExibicao;
+import com.example.cinemaapi.model.repository.SessaoTipoExibicaoRepository;
 import com.example.cinemaapi.service.FilmeService;
 import com.example.cinemaapi.service.PrecoService;
 import com.example.cinemaapi.service.SalaService;
@@ -31,6 +34,9 @@ import io.swagger.annotations.ApiResponses;
 @Api("API de Sessões")
 public class SessaoController {
 
+    @Autowired
+    private SessaoTipoExibicaoRepository repository;
+
     private final FilmeService filmeService;
     private final PrecoService precoService;
     private final SalaService salaService;
@@ -40,7 +46,7 @@ public class SessaoController {
     @ApiOperation("Obter detalhes de Sessões")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Sessões encontrados"),
-            @ApiResponse(code = 404, message = "Sessões não encontradas")})
+            @ApiResponse(code = 404, message = "Sessões não encontradas") })
     public ResponseEntity get() {
         List<Sessao> sessaos = service.getSessaos();
         return ResponseEntity.ok(sessaos.stream().map(SessaoDTO::create).collect(Collectors.toList()));
@@ -50,7 +56,7 @@ public class SessaoController {
     @ApiOperation("Obter detalhes de um Sessão")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Sessão encontrada"),
-            @ApiResponse(code = 404, message = "Sessão não encontrada")})
+            @ApiResponse(code = 404, message = "Sessão não encontrada") })
     public ResponseEntity get(@PathVariable("id") Long id) {
         Optional<Sessao> sessao = service.getSessaoById(id);
         if (!sessao.isPresent()) {
@@ -63,7 +69,7 @@ public class SessaoController {
     @ApiOperation("Salva uma nova Sessão")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Sessão salva com sucesso"),
-            @ApiResponse(code = 400, message = "Erro ao salvar a Sessão")})
+            @ApiResponse(code = 400, message = "Erro ao salvar a Sessão") })
     public ResponseEntity post(@RequestBody SessaoDTO dto) {
         try {
             Sessao sessao = converter(dto);
@@ -78,7 +84,7 @@ public class SessaoController {
     @ApiOperation("Atualizar uma Sessão")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Sessão atualizada"),
-            @ApiResponse(code = 400, message = "Erro ao atualizar Sessão")})
+            @ApiResponse(code = 400, message = "Erro ao atualizar Sessão") })
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody SessaoDTO dto) {
         if (!service.getSessaoById(id).isPresent()) {
             return new ResponseEntity("Sessao não encontrada", HttpStatus.NOT_FOUND);
@@ -97,7 +103,7 @@ public class SessaoController {
     @ApiOperation("Excluir uma Sessão")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Sessão excluida com sucesso"),
-            @ApiResponse(code = 400, message = "Erro ao excluir a Sessão")})
+            @ApiResponse(code = 400, message = "Erro ao excluir a Sessão") })
     public ResponseEntity excluir(@PathVariable("id") Long id) {
         Optional<Sessao> sessao = service.getSessaoById(id);
         if (!sessao.isPresent()) {
@@ -109,6 +115,40 @@ public class SessaoController {
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/sessao/{sessaoId}")
+    @ApiOperation("Buscar tipos de exibição vinculados a uma Sessão pelo ID da Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Tipos de exibição encontrados"),
+            @ApiResponse(code = 404, message = "Nenhum tipo de exibição encontrado para essa sessão") })
+    public ResponseEntity<List<SessaoTipoExibicao>> buscarPorSessao(@PathVariable Long sessaoId) {
+        List<SessaoTipoExibicao> lista = repository.findBySessaoId(sessaoId);
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(lista);
+    }
+
+    @PostMapping("/lote")
+    @ApiOperation("Salvar uma lista (lote) de vínculos Sessão-TipoExibicao")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Lista de vínculos salva com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao salvar os vínculos") })
+    public ResponseEntity<Void> salvarLote(@RequestBody List<SessaoTipoExibicao> lista) {
+        repository.saveAll(lista);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/tiposexibicao/{id}")
+    @ApiOperation("Deletar vínculos de tipos de exibição por ID da Sessão")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Vínculos deletados com sucesso"),
+            @ApiResponse(code = 400, message = "Erro ao deletar vínculos") })
+    public ResponseEntity<Void> deletarVinculosPorSessao(@PathVariable Long id) {
+        List<SessaoTipoExibicao> vinculos = repository.findBySessaoId(id);
+        repository.deleteAll(vinculos);
+        return ResponseEntity.noContent().build();
     }
 
     public Sessao converter(SessaoDTO dto) {

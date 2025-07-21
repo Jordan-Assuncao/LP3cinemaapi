@@ -133,6 +133,36 @@ public class FilmeGeneroController {
         }
     }
 
+    @GetMapping("/{id}/generos")
+    @ApiOperation("Listar os gêneros vinculados a um filme pelo ID do filme")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Gêneros do filme retornados com sucesso"),
+            @ApiResponse(code = 404, message = "Filme não encontrado ou sem gêneros vinculados") })
+    public ResponseEntity<List<FilmeGeneroDTO>> listarGenerosPorFilme(@PathVariable Long id) {
+        List<FilmeGenero> lista = filmeGeneroRepository.findAllByFilmeId(id);
+        List<FilmeGeneroDTO> resposta = lista.stream()
+                .map(fg -> new FilmeGeneroDTO(
+                        fg.getId(),
+                        fg.getFilme().getId(),
+                        fg.getFilme().getTitulo(),
+                        fg.getGenero().getId(),
+                        fg.getGenero().getNomeGenero()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resposta);
+    }
+
+    @DeleteMapping("/filme/{id}")
+    @ApiOperation("Deletar todos os vínculos de gêneros de um filme pelo ID do filme")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Vínculos de gêneros deletados com sucesso"),
+            @ApiResponse(code = 404, message = "Filme não encontrado") })
+    public ResponseEntity<Void> deletarVinculosPorFilme(@PathVariable Long id) {
+        List<FilmeGenero> vinculos = filmeGeneroRepository.findByFilmeId(id);
+        filmeGeneroRepository.deleteAll(vinculos);
+        return ResponseEntity.noContent().build();
+    }
+
     public FilmeGenero converter(FilmeGeneroDTO dto) {
         ModelMapper modelMapper = new ModelMapper();
         FilmeGenero filmeGenero = modelMapper.map(dto, FilmeGenero.class);

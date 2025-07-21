@@ -101,6 +101,7 @@ public class TipoExibicaoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
 
     public TipoExibicao converter(TipoExibicaoDTO dto) {
         ModelMapper modelMapper = new ModelMapper();

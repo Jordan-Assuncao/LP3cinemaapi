@@ -3,6 +3,7 @@ package com.example.cinemaapi.service;
 import com.example.cinemaapi.exception.RegraNegocioException;
 import com.example.cinemaapi.model.entity.CinemaAdmin;
 import com.example.cinemaapi.model.repository.CinemaAdminRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class CinemaAdminService {
+
     private CinemaAdminRepository repository;
 
     public CinemaAdminService(CinemaAdminRepository repository) {

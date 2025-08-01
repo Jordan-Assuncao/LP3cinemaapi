@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.cinemaapi.security.JwtAuthFilter;
+import com.example.cinemaapi.security.JwtService;
 import com.example.cinemaapi.service.UsuarioService;
 
 @EnableWebSecurity
@@ -22,9 +24,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public OncePerRequestFilter jwtFilter() {
+        return new JwtAuthFilter(jwtService, usuarioService);
     }
 
     @Override
@@ -48,7 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/tipoexibicoes/**")
                 .permitAll()
                 .antMatchers("/api/v1/compras/**")
-                .permitAll().antMatchers("/api/v1/salas/**")
+                .permitAll()
+                .antMatchers("/api/v1/salas/**")
                 .permitAll()
                 .antMatchers("/api/v1/assentos/**")
                 .permitAll()
@@ -61,23 +72,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/ingressos/**")
                 .permitAll()
                 .antMatchers("/api/v1/precos/**")
-                .permitAll()
+                .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/v1/classificacaoindicativas/**")
-                .permitAll()
+                .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/v1/ingressos/**")
-                .permitAll()
+                .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/v1/clientes/**")
-                .permitAll()
+                .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/v1/cinemaadmins/**")
                 .permitAll()
                 .antMatchers("/api/v1/usuarios/**")
-                .hasAnyRole("USER", "ADMIN")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-        // .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         ;
     }
 

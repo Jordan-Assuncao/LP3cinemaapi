@@ -10,9 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cinemaapi.api.dto.CredenciaisDTO;
+import com.example.cinemaapi.api.dto.TokenDTO;
 import com.example.cinemaapi.api.dto.UsuarioDTO;
 import com.example.cinemaapi.exception.RegraNegocioException;
+import com.example.cinemaapi.exception.SenhaInvalidaException;
 import com.example.cinemaapi.model.entity.Usuario;
+import com.example.cinemaapi.security.JwtService;
 import com.example.cinemaapi.service.UsuarioService;
 
 import java.util.List;
@@ -27,7 +31,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtService jwtService;
     private final UsuarioService service;
 
     @GetMapping()
@@ -43,6 +47,20 @@ public class UsuarioController {
             return new ResponseEntity("Usuário não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(usuario.map(UsuarioDTO::create));
+    }
+
+    @PostMapping("/auth")
+    public TokenDTO autenticar(@RequestBody CredenciaisDTO credenciais) {
+        try {
+            Usuario usuario = Usuario.builder()
+                    .login(credenciais.getLogin())
+                    .senha(credenciais.getSenha()).build();
+            UserDetails usuarioAutenticado = usuarioService.autenticar(usuario);
+            String token = jwtService.gerarToken(usuario);
+            return new TokenDTO(usuario.getLogin(), token);
+        } catch (UsernameNotFoundException | SenhaInvalidaException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     @PostMapping()

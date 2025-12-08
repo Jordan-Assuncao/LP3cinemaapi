@@ -24,5 +24,22 @@ public class Cliente {
     private String telefone;
     private String email;
     private String senha;
+
+    public boolean isCpfValido() {
+        return cpf != null && cpf.matches("\\d{11}");
+    }
+
+    public boolean isEmailValido() {
+        return email != null && email.contains("@") && email.contains(".");
+    }
+
+    public boolean hasContatoCompleto() {
+        return telefone != null && !telefone.isEmpty() &&
+               email != null && !email.isEmpty();
+    }
+
+    public boolean isSenhaSegura() {
+        return senha != null && senha.length() >= 6;
+    }
 }
 

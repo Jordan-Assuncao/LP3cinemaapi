@@ -23,4 +23,14 @@ public class Preco {
 
     private BigDecimal valorInteira;
     private String descricao;
+
+    public BigDecimal getMeiaEntrada() {
+        if (valorInteira == null)
+            return BigDecimal.ZERO;
+        return valorInteira.divide(BigDecimal.valueOf(2));
+    }
+
+    public boolean isValido() {
+        return valorInteira != null && valorInteira.compareTo(BigDecimal.ZERO) > 0;
+    }
 }

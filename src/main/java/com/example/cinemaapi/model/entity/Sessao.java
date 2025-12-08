@@ -30,4 +30,21 @@ public class Sessao {
 
     @ManyToOne
     private Preco preco;
+
+    public boolean isAtiva() {
+        return this.statusSessao;
+    }
+
+    public boolean isDisponivelParaVenda() {
+        if (!statusSessao)
+            return false;
+        if (sala == null)
+            return false;
+        if (filme == null)
+            return false;
+        if (preco == null)
+            return false;
+
+        return true;
+    }
 }

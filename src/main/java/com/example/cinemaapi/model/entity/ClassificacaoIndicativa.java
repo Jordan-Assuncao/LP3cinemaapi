@@ -21,4 +21,15 @@ public class ClassificacaoIndicativa {
 
     private String faixaEtaria;
     private String descricao;
+
+    public boolean isLivre() {
+        return "L".equalsIgnoreCase(faixaEtaria) ||
+               "Livre".equalsIgnoreCase(faixaEtaria);
+    }
+
+    public boolean isParaAdultos() {
+        return "18".equals(faixaEtaria) ||
+               "18+".equals(faixaEtaria) ||
+               "Maior de 18".equalsIgnoreCase(faixaEtaria);
+    }
 }

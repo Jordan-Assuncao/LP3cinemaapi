@@ -47,48 +47,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
+                .cors().and() // ATIVA o CORS
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/unidades/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/tipoassentos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/tipoexibicoes/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/compras/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/salas/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/assentos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/filmes/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/sessoes/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/generos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/ingressos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/precos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/classificacaoindicativas/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/ingressos/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/clientes/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/cinemaadmins/**")
-                .hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/v1/usuarios/**")
-                .permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/**").permitAll() // LIBERA TUDO
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-        ;
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override

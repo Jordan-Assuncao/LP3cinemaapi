@@ -116,7 +116,7 @@ public class AssentoTest {
 
         Assento preferencial = new Assento(null, "B1", 2, 5, false, null, tipo);
 
-        String msg = a.avaliarCondicoesDeAssento(preferencial, false, true, 40);
+        String msg = a.avaliarCondicoesDeAssento(preferencial, false, true, 30);
 
         assertEquals("Assento preferencial não permitido", msg);
     }
@@ -130,7 +130,7 @@ public class AssentoTest {
 
         Assento preferencial = new Assento(null, "C1", 2, 5, false, null, tipo);
 
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 16);
+        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 17);
 
         assertEquals("Assento preferencial permitido apenas para maiores de idade", msg);
     }
@@ -144,7 +144,7 @@ public class AssentoTest {
 
         Assento preferencial = new Assento(null, "D1", 3, 4, false, null, tipo);
 
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 30);
+        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 59);
 
         assertEquals("Assento preferencial prioritário para idosos ou PCD", msg);
     }
@@ -158,7 +158,7 @@ public class AssentoTest {
 
         Assento preferencial = new Assento(null, "D1", 3, 4, false, null, tipo);
 
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 22);
+        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 59);
 
         assertEquals("OK", msg);
     }

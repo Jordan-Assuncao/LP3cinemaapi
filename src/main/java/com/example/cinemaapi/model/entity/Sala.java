@@ -55,8 +55,8 @@ public class Sala {
     }
 
     /**
-     * Método complexo (complexidade ciclomática 15)
-     * para fins acadêmicos.
+     * Método complexo complexidade ciclomática 15
+     * para o trabalho.
      */
     public String validarConfiguracaoSala() {
         StringBuilder erros = new StringBuilder();

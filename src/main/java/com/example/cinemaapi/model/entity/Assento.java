@@ -92,10 +92,10 @@ public class Assento {
 
         // Assentos nas primeiras fileiras
         if (assento.getFileiraVertical() <= 2) {
-            if (idadeCliente < 12) {
+            if (idadeCliente < 10) {
                 return "Assento muito próximo da tela para crianças";
             }
-            if (idadeCliente > 70) {
+            if (idadeCliente > 60) {
                 return "Assento muito próximo da tela para idosos";
             }
         }

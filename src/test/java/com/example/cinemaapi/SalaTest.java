@@ -99,7 +99,7 @@ public class SalaTest {
         assertEquals(0.2, sala.getPercentualPreferenciais(), 0.0001);
     }
 
-    @Test
+    @Test // 1
     void numeroSalaNulo() {
         Sala sala = criarBase();
         sala.setNumeroSala(null);
@@ -108,7 +108,7 @@ public class SalaTest {
         assertTrue(res.contains("Número da sala inválido."));
     }
 
-    @Test
+    @Test // 2
     void numeroSalaVazia() {
         Sala sala = criarBase();
         sala.setNumeroSala("");
@@ -126,8 +126,7 @@ public class SalaTest {
         assertTrue(res.contains("Número da sala inválido."));
     }
 
-    // capacidade <= 0
-    @Test
+    @Test // 3
     void capacidadeInvalida() {
         Sala sala = criarBase();
         sala.setCapacidade(0);
@@ -136,8 +135,7 @@ public class SalaTest {
         assertTrue(res.contains("A capacidade da sala deve ser maior que zero."));
     }
 
-    // capacidade preferencial < 0
-    @Test
+    @Test // 4
     void capacidadePreferencialNegativa() {
         Sala sala = criarBase();
         sala.setCapacidadePreferencial(-1);
@@ -146,8 +144,7 @@ public class SalaTest {
         assertTrue(res.contains("A capacidade preferencial não pode ser negativa."));
     }
 
-    // preferencial > capacidade
-    @Test
+    @Test // 5
     void preferenciaisExcedemComuns() {
         Sala sala = criarBase();
         sala.setCapacidadePreferencial(100);
@@ -157,7 +154,7 @@ public class SalaTest {
     }
 
     // fileiras inválidas
-    @Test
+    @Test // 6
     void fileirasInvalidas() {
         Sala sala = criarBase();
         sala.setNumeroFileiraVertical(0);
@@ -166,8 +163,16 @@ public class SalaTest {
         assertTrue(res.contains("Quantidade de fileiras inválida."));
     }
 
-    // capacidade maior que posições do grid
-    @Test
+    @Test // 7
+    void fileirasHorizontaisInvalidas() {
+        Sala sala = criarBase();
+        sala.setNumeroFileiraHorizontal(0);
+
+        String res = sala.validarConfiguracaoSala();
+        assertTrue(res.contains("Quantidade de fileiras inválida."));
+    }
+
+    @Test //8
     void gridInsuficiente() {
         Sala sala = criarBase();
         sala.setCapacidade(100);
@@ -178,8 +183,7 @@ public class SalaTest {
         assertTrue(res.contains("Capacidade total excede o número de posições possíveis no grid."));
     }
 
-    // formatoSala nulo
-    @Test
+    @Test //9
     void formatoSalaNulo() {
         Sala sala = criarBase();
         sala.setFormatoSala(null);
@@ -188,9 +192,7 @@ public class SalaTest {
         assertTrue(res.contains("Formato da sala inválido."));
     }
 
-
-    // sala sem unidade
-    @Test
+    @Test //10
     void unidadeInexistente() {
         Sala sala = criarBase();
         sala.setUnidade(null);
@@ -199,19 +201,17 @@ public class SalaTest {
         assertTrue(res.contains("Sala não vinculada a nenhuma unidade."));
     }
 
-    // sala IMAX com capacidade < 30
-    @Test
+    @Test //11
     void imaxComCapacidadeInsuficiente() {
         Sala sala = criarBase();
         sala.setFormatoSala("imax");
-        sala.setCapacidade(20);
+        sala.setCapacidade(29);
 
         String res = sala.validarConfiguracaoSala();
         assertTrue(res.contains("Uma sala IMAX não pode ter capacidade inferior a 30 lugares."));
     }
 
-    // sala pequena com preferenciais
-    @Test
+    @Test //12
     void salaPequenaComPreferenciais() {
         Sala sala = criarBase();
         sala.setCapacidade(15);
@@ -221,7 +221,7 @@ public class SalaTest {
         assertTrue(res.contains("Sala pequena demais para possuir assentos preferenciais."));
     }
 
-    @Test
+    @Test //13
     void densidadeMuitoBaixa() {
         Sala sala = new Sala();
         sala.setNumeroSala("1");
@@ -240,8 +240,8 @@ public class SalaTest {
         assertTrue(res.contains("Densidade de assentos muito baixa para uma sala comercial."));
     }
 
-    // 13 — densidade > 0.95
-    @Test
+    // densidade > 0.95
+    @Test //14
     void densidadeMuitoAlta() {
         Sala sala = criarBase();
         sala.setCapacidade(48); // grid = 50 → 0.96
@@ -250,7 +250,6 @@ public class SalaTest {
         assertTrue(res.contains("Densidade de assentos muito alta e pode prejudicar mobilidade."));
     }
 
-    // 14 — vários erros ao mesmo tempo (teste multi-erro)
     @Test
     void variosErrosAoMesmoTempo() {
         Sala sala = new Sala();
@@ -310,7 +309,7 @@ public class SalaTest {
         assertFalse(res.contains("Formato da sala inválido."));
     }
 
-    @Test
+    @Test //15
     void configuracaoValida() {
         Sala sala = new Sala();
         sala.setNumeroSala("1");

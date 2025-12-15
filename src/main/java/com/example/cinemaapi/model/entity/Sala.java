@@ -54,72 +54,39 @@ public class Sala {
         return (double) getCapacidadeTotal() / getTotalPosicoesGrid();
     }
 
+
     /**
-     * Método complexo (complexidade ciclomática 15)
-     * para fins acadêmicos.
-     */
-    public String validarConfiguracaoSala() {
+     * Método que realiza validação de regras comerciais (domínio simplificado para utilização na tarefa)
+     * Pontos de Decisão (P): 10 / Cálculo: Ponto do início do método + (P) = 11 / Complexidade Ciclomática (CC): 11*/
+    public String validarPoliticasComerciais() {
         StringBuilder erros = new StringBuilder();
-
-        if (numeroSala == null || numeroSala.trim().isEmpty()) {
-            erros.append("Número da sala inválido.\n");
+        if (capacidade < 10) {
+            erros.append("Capacidade mínima não atingida.\n");
         }
-
-        if (capacidade <= 0) {
-            erros.append("A capacidade da sala deve ser maior que zero.\n");
+        if (capacidade > 150) {
+            erros.append("Capacidade máxima excedida.\n");
         }
-
-        if (capacidadePreferencial < 0) {
-            erros.append("A capacidade preferencial não pode ser negativa.\n");
-        }
-
-        if (capacidadePreferencial > capacidade) {
-            erros.append("Assentos preferenciais não podem exceder os assentos comuns.\n");
-        }
-
-        if (numeroFileiraVertical <= 0 || numeroFileiraHorizontal <= 0) {
-            erros.append("Quantidade de fileiras inválida.\n");
-        }
-
-        if (getCapacidadeTotal() > getTotalPosicoesGrid()) {
-            erros.append("Capacidade total excede o número de posições possíveis no grid.\n");
-        }
-
-        if (formatoSala == null || formatoSala.trim().isEmpty()) {
-            erros.append("Formato da sala inválido.\n");
-        } else {
-            if (!formatoSala.equalsIgnoreCase("retangular")
-                    && !formatoSala.equalsIgnoreCase("oval")
-                    && !formatoSala.equalsIgnoreCase("imax")
-                    && !formatoSala.equalsIgnoreCase("premium")) {
-                erros.append("Formato da sala não reconhecido.\n");
-            }
-        }
-
-        if (unidade == null) {
-            erros.append("Sala não vinculada a nenhuma unidade.\n");
-        }
-
-        if (capacidade < 30 && formatoSala.equalsIgnoreCase("imax")) {
-            erros.append("Uma sala IMAX não pode ter capacidade inferior a 30 lugares.\n");
-        }
-
         if (capacidadePreferencial > 0 && capacidade < 20) {
-            erros.append("Sala pequena demais para possuir assentos preferenciais.\n");
+            // P4: && capacidade < 20
+            erros.append("Sala pequena demais para assentos preferenciais.\n");
         }
-
         double densidade = getDensidadeAssentos();
         if (densidade < 0.3) {
-            erros.append("Densidade de assentos muito baixa para uma sala comercial.\n");
-        } else if (densidade > 0.95) {
-            erros.append("Densidade de assentos muito alta e pode prejudicar mobilidade.\n");
+            erros.append("Densidade de assentos muito baixa.\n");
         }
-
+        else if (densidade > 0.95) {
+            erros.append("Densidade de assentos muito alta.\n");
+        }
+        if (numeroFileiraVertical <= 2 || numeroFileiraHorizontal <= 2) {
+            // P8: ||
+            erros.append("Número insuficiente de fileiras.\n");
+        }
+        if (unidade == null) {
+            erros.append("Sala sem unidade vinculada.\n");
+        }
         if (erros.length() == 0) {
-            return "Configuração da sala válida.";
+            return "Políticas comerciais validadas com sucesso.";
         }
-
         return erros.toString();
-
     }
 }

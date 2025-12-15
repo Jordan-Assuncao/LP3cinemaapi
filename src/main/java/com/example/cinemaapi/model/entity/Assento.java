@@ -34,74 +34,39 @@ public class Assento {
     public boolean isBloqueado() {
         return this.statusAssento;
     }
-
     /**
      * Método propositalmente complexo para o trabalho.
      * Avalia diversas regras sobre o assento antes de permitir reserva.
-     *
-     * Complexidade ciclomática: 15
+     * Complexidade ciclomática: 11
      */
-    public String avaliarCondicoesDeAssento(Assento assento,
-            boolean permitirPreferencial,
-            boolean permitirBloqueado,
-            int idadeCliente) {
-
+    public String avaliarCondicoesDeAssento(Assento assento, boolean permitirPreferencial, boolean permitirBloqueado, int idadeCliente) {
         if (assento == null) {
             return "Assento inexistente";
         }
-
-        if (assento.getNumeroAssento() == null || assento.getNumeroAssento().isBlank()) {
+        if (assento.getNumeroAssento() == null) {
             return "Assento inválido";
         }
-
-        // Assento bloqueado
+        if (assento.getNumeroAssento().isBlank()) {
+            return "Assento inválido";
+        }
         if (assento.isBloqueado()) {
             if (!permitirBloqueado) {
                 return "Assento bloqueado";
             }
         }
-
-        // Assento preferencial
-        if (assento.getTipoAssento() != null && assento.getTipoAssento().isPreferencial()) {
-            if (!permitirPreferencial) {
-                return "Assento preferencial não permitido";
-            }
-
-            // regras para preferenciais
-            if (idadeCliente < 18) {
-                return "Assento preferencial permitido apenas para maiores de idade";
-            }
-            if (idadeCliente < 60 && !assento.getTipoAssento().isParaPcd()) {
-                return "Assento preferencial prioritário para idosos ou PCD";
+        if (assento.getTipoAssento() != null) {
+            if (assento.getTipoAssento().isPreferencial()) {
+                if (!permitirPreferencial) {
+                    return "Assento preferencial não permitido";
+                }
+                if (idadeCliente < 18) {
+                    return "Assento preferencial permitido apenas para maiores de idade";
+                }
+                if (idadeCliente < 10) {
+                    return "Assento preferencial: idade mínima de 10 anos";
+                }
             }
         }
-
-        // Regras gerais de posição
-        if (assento.getFileiraVertical() < 0 || assento.getFileiraHorizontal() < 0) {
-            return "Posição inválida";
-        }
-
-        // Assentos muito distantes do centro não são recomendados
-        if (assento.getFileiraHorizontal() > 20) {
-            if (idadeCliente > 60) {
-                return "Assento distante demais para idosos";
-            } else if (idadeCliente < 10) {
-                return "Assento não recomendado para crianças";
-            }
-        }
-
-        // Assentos nas primeiras fileiras
-        if (assento.getFileiraVertical() <= 2) {
-            if (idadeCliente < 12) {
-                return "Assento muito próximo da tela para crianças";
-            }
-            if (idadeCliente > 70) {
-                return "Assento muito próximo da tela para idosos";
-            }
-        }
-
-        // Se tudo passou:
         return "OK";
     }
-
 }

@@ -3,6 +3,8 @@ package com.example.cinemaapi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.example.cinemaapi.model.entity.Sala;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.example.cinemaapi.model.entity.Assento;
@@ -21,407 +23,172 @@ public class AssentoTest {
     void deveRetornarBloqueadoQuandoStatusForTrue() {
         Assento a = new Assento();
         a.setStatusAssento(true);
-
         assertTrue(a.isBloqueado());
     }
 
-    @Test
-    void deveRetornarAssentoInvalidoQuandoNumeroAssentoForNull() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento(null);
-        assento.setFileiraHorizontal(5);
-        assento.setFileiraVertical(5);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(null);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                30);
-
-        assertEquals("Assento inválido", resultado);
+    private TipoAssento criarTipoAssento(String nome) {
+        return new TipoAssento(1L, nome, "Descrição base");
     }
 
-    @Test
-    void deveRetornarAssentoBloqueadoQuandoAssentoEstaBloqueadoEPermitirBloqueadoFalse() {
-        Assento assento = new Assento();
-        assento.setId(1L);
-        assento.setNumeroAssento("A10");
-        assento.setFileiraVertical(5);
-        assento.setFileiraHorizontal(5);
-        assento.setStatusAssento(true);
-        assento.setTipoAssento(null);
+    private Assento assentoBase;
+    private TipoAssento tipoComum;
+    private TipoAssento tipoPreferencial;
 
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                false,
-                30);
+    @BeforeEach
+    void setup() {
 
-        assertEquals("Assento bloqueado", resultado);
+        tipoComum = criarTipoAssento("Normal");
+        tipoPreferencial = criarTipoAssento("assento preferencial vip");
+
+
+        assentoBase = new Assento();
+        assentoBase.setNumeroAssento("A1");
+        assentoBase.setStatusAssento(false);
+        assentoBase.setTipoAssento(tipoComum);
+        assentoBase.setSala(new Sala());
     }
 
+    //TESTE 1
     @Test
-    void deveProsseguirQuandoAssentoBloqueadoMasPermitirBloqueadoTrue() {
-        Assento assento = new Assento();
-        assento.setId(2L);
-        assento.setNumeroAssento("B10");
-        assento.setFileiraVertical(5);
-        assento.setFileiraHorizontal(5);
-        assento.setStatusAssento(true);
-        assento.setTipoAssento(null);
+    void deveRetornarOKQuandoTudoValido() {
 
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                30);
-        assertEquals("OK", resultado);
-    }
-
-    @Test
-    void deveRetornarAssentoInexistenteQuandoNulo() {
-        Assento a = new Assento();
-        String msg = a.avaliarCondicoesDeAssento(null, true, true, 30);
-        assertEquals("Assento inexistente", msg);
-    }
-
-    @Test
-    void deveRetornarAssentoInvalidoQuandoNumeroAssentoVazio() {
-        Assento a = new Assento();
-        Assento invalid = new Assento(null, "", 3, 3, true, null, null);
-
-        String msg = a.avaliarCondicoesDeAssento(invalid, true, true, 25);
-
-        assertEquals("Assento inválido", msg);
-    }
-
-    @Test
-    void deveRetornarAssentoBloqueadoQuandoNaoPermiteBloqueado() {
-        Assento a = new Assento();
-        Assento bloqueado = new Assento(null, "A1", 3, 3, true, null, null);
-
-        String msg = a.avaliarCondicoesDeAssento(bloqueado, true, false, 30);
-
-        assertEquals("Assento bloqueado", msg);
-    }
-
-    @Test
-    void deveRecusarAssentoPreferencialSemPermissao() {
-        Assento a = new Assento();
-
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento preferencial = new Assento(null, "B1", 2, 5, false, null, tipo);
-
-        String msg = a.avaliarCondicoesDeAssento(preferencial, false, true, 30);
-
-        assertEquals("Assento preferencial não permitido", msg);
-    }
-
-    @Test
-    void deveRecusarPreferencialParaMenorDeIdade() {
-        Assento a = new Assento();
-
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento preferencial = new Assento(null, "C1", 2, 5, false, null, tipo);
-
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 17);
-
-        assertEquals("Assento preferencial permitido apenas para maiores de idade", msg);
-    }
-
-    @Test
-    void deveRecusarPreferencialParaAdultoNaoPcd() {
-        Assento a = new Assento();
-
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento preferencial = new Assento(null, "D1", 3, 4, false, null, tipo);
-
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 59);
-
-        assertEquals("Assento preferencial prioritário para idosos ou PCD", msg);
-    }
-
-    @Test
-    void deveAceitarPreferencialParaPcd() {
-        Assento a = new Assento();
-
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PCD");
-
-        Assento preferencial = new Assento(null, "D1", 3, 4, false, null, tipo);
-
-        String msg = a.avaliarCondicoesDeAssento(preferencial, true, true, 59);
-
-        assertEquals("OK", msg);
-    }
-
-    @Test
-    void deveDetectarPosicaoInvalida() {
-        Assento a = new Assento();
-        Assento invalido = new Assento(null, "E1", -1, -5, false, null, null);
-
-        String msg = a.avaliarCondicoesDeAssento(invalido, true, true, 35);
-
-        assertEquals("Posição inválida", msg);
-    }
-
-    // 1) preferencial NÃO permitido -> deve retornar "Assento preferencial não
-    // permitido"
-    @Test
-    void preferencialNaoPermitido_retornaMensagem() {
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento assento = new Assento();
-        assento.setNumeroAssento("P1");
-        assento.setFileiraVertical(5);
-        assento.setFileiraHorizontal(5);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(tipo);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
                 false,
                 true,
-                30);
-
-        assertEquals("Assento preferencial não permitido", resultado);
-    }
-
-    // 2) preferencial, permitido, idade < 18 -> "Assento preferencial permitido
-    // apenas para maiores de idade"
-    @Test
-    void preferencialMenorDeIdade_retornaMensagem() {
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento assento = new Assento();
-        assento.setNumeroAssento("P2");
-        assento.setFileiraVertical(3);
-        assento.setFileiraHorizontal(4);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(tipo);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                17);
-
-        assertEquals("Assento preferencial permitido apenas para maiores de idade", resultado);
-    }
-
-    // 3) preferencial, permitido, idade entre 18 e 59 e NÃO PCD ->
-    // "Assento preferencial prioritário para idosos ou PCD"
-    @Test
-    void preferencialAdultoNaoPcd_retornaPrioritario() {
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL"); // garante isParaPcd() == false
-
-        Assento assento = new Assento();
-        assento.setNumeroAssento("P3");
-        assento.setFileiraVertical(4);
-        assento.setFileiraHorizontal(6);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(tipo);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true, // permitirPreferencial
-                true,
-                59 // 18 <= idade < 60
+                30
         );
 
-        assertEquals("Assento preferencial prioritário para idosos ou PCD", resultado);
+        assertEquals("OK", res, "O assento válido e comum deve retornar OK.");
     }
 
-    // 4) preferencial, permitido, idade >= 60
+    //TESTE 2
     @Test
-    void preferencialIdoso_naoRetornaNoBloco_eContinuaOK() {
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL");
-
-        Assento assento = new Assento();
-        assento.setNumeroAssento("P4");
-        assento.setFileiraVertical(10);
-        assento.setFileiraHorizontal(8);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(tipo);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                61);
-
-        assertEquals("OK", resultado);
+    void deveRetornarErroAssentoInexistente() {
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                null,
+                true, true, 30
+        );
+        assertEquals("Assento inexistente", res, "P1 falhou.");
     }
 
-    // 5) preferencial, permitido, adulto (<60) MAS tipo é PCD -> !isParaPcd() ==
-    // false,
-    // portanto não deve cair no retorno "prioritário" e continua (retorna "OK")
+    //TESTE 3
     @Test
-    void preferencialAdultoMasTipoPcd_naoRetornaPrioritario() {
-        TipoAssento tipo = new TipoAssento();
-        tipo.setNomeAssento("PREFERENCIAL PCD");
+    void deveRetornarErroNumeroAssentoNulo() {
+        assentoBase.setNumeroAssento(null);
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                true, true, 30
+        );
+        assertEquals("Assento inválido", res, "P2 falhou.");
+    }
+    //TESTE 4
+    @Test
+    void deveRetornarErroNumeroAssentoVazio() {
+        assentoBase.setNumeroAssento("  ");
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                true, true, 30
+        );
+        assertEquals("Assento inválido", res, "P3 falhou.");
+    }
+    //TESTE 5
+    @Test
+    void deveRetornarErroAssentoBloqueadoNaoPermitido() {
+        assentoBase.setStatusAssento(true);
 
-        Assento assento = new Assento();
-        assento.setNumeroAssento("P5");
-        assento.setFileiraVertical(6);
-        assento.setFileiraHorizontal(6);
-        assento.setStatusAssento(false);
-        assento.setTipoAssento(tipo);
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                true,
+                false,
+                30
+        );
+        assertEquals("Assento bloqueado", res, "P5 falhou.");
+    }
+    //TESTE 6
+    @Test
+    void deveRetornarErroPreferencialNaoPermitido() {
+        assentoBase.setTipoAssento(tipoPreferencial);
 
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                false,
+                true,
+                30
+        );
+        assertEquals("Assento preferencial não permitido", res, "P8 falhou.");
+    }
+
+    //TESTE 7
+    @Test
+    void deveRetornarErroPreferencialMenorDeIdade() {
+        assentoBase.setTipoAssento(tipoPreferencial);
+
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
                 true,
                 true,
-                59 // idade < 60, mas tipo.isParaPcd() == true -> NÃO retorna a mensagem
-                   // prioritaria
+                17
+        );
+        assertEquals("Assento preferencial permitido apenas para maiores de idade", res, "P9 falhou.");
+    }
+
+    //TESTE 8
+    @Test
+    void deveRetornarErroPreferencialMenorQueDezAnos() {
+        assentoBase.setTipoAssento(tipoPreferencial);
+
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                true,
+                true,
+                9
         );
 
-        assertEquals("OK", resultado);
+        assertEquals("Assento preferencial permitido apenas para maiores de idade",
+                res, "P10 falhou, mas o P9 foi retornado primeiro (conforme a lógica do método).");
     }
 
+    //TESTE 9
     @Test
-    void posicaoComFileiraVerticalNegativa_retornaInvalida() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("A1");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(-1);
-        assento.setFileiraHorizontal(5);
+    void devePassarQuandoAssentoNaoBloqueado() {
+        assentoBase.setStatusAssento(false);
 
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
                 true,
-                true,
-                30);
-
-        assertEquals("Posição inválida", resultado);
-    }
-
-    @Test
-    void posicaoComFileiraHorizontalNegativa_retornaInvalida() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("A2");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(3);
-        assento.setFileiraHorizontal(-2);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                30);
-
-        assertEquals("Posição inválida", resultado);
-    }
-
-    @Test
-    void posicaoValida_naoRetornaAqui() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("A3");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(2);
-        assento.setFileiraHorizontal(4);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                30);
-        assertEquals("OK", resultado);
-    }
-
-    @Test
-    void assentoDistanteParaIdoso_retornaMensagemCorreta() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("B10");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(2);
-        assento.setFileiraHorizontal(25); // > 20
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                70 // idoso
+                false,
+                30
         );
-
-        assertEquals("Assento distante demais para idosos", resultado);
+        assertEquals("OK", res, "P4 Falso falhou.");
     }
 
+    //TESTE 10
     @Test
-    void assentoDistanteParaCrianca_retornaMensagemCorreta() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("B11");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(2);
-        assento.setFileiraHorizontal(25); 
+    void devePassarEmPreferencialPermitido() {
+        assentoBase.setTipoAssento(tipoPreferencial);
 
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
-                true,
-                true,
-                8 // criança
-        );
-
-        assertEquals("Assento não recomendado para crianças", resultado);
-    }
-
-    @Test
-    void assentoDistanteComIdadeNormal_naoRetornaMensagens() {
-        Assento assento = new Assento();
-        assento.setNumeroAssento("B12");
-        assento.setStatusAssento(false);
-        assento.setFileiraVertical(2);
-        assento.setFileiraHorizontal(25);
-
-        String resultado = assento.avaliarCondicoesDeAssento(
-                assento,
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
                 true,
                 true,
                 30
         );
-        assertEquals("OK", resultado);
+        assertEquals("OK", res, "P8 Falso falhou.");
     }
 
+
+    //TESTE 11
     @Test
-    void deveRejeitarAssentoMuitoProximoParaCrianca() {
-        Assento a = new Assento();
-        Assento s = new Assento(null, "G1", 1, 10, false, null, null);
+    void devePassarEmPreferencialIdadeMaiorQueDezoito() {
+        assentoBase.setTipoAssento(tipoPreferencial);
 
-        String msg = a.avaliarCondicoesDeAssento(s, true, true, 10);
-
-        assertEquals("Assento muito próximo da tela para crianças", msg);
+        String res = assentoBase.avaliarCondicoesDeAssento(
+                assentoBase,
+                true,
+                true,
+                18
+        );
+        assertEquals("OK", res, "P9 Falso falhou.");
     }
-
-    @Test
-    void deveRejeitarAssentoMuitoProximoParaIdoso() {
-        Assento a = new Assento();
-        Assento s = new Assento(null, "G2", 2, 12, false, null, null);
-
-        String msg = a.avaliarCondicoesDeAssento(s, true, true, 75);
-
-        assertEquals("Assento muito próximo da tela para idosos", msg);
-    }
-
-    @Test
-    void deveRetornarOkQuandoTodasAsRegrasForemAtendidas() {
-        Assento a = new Assento();
-        Assento valido = new Assento(null, "H1", 5, 10, false, null, null);
-
-        String msg = a.avaliarCondicoesDeAssento(valido, true, true, 40);
-
-        assertEquals("OK", msg);
-    }
-
 }
